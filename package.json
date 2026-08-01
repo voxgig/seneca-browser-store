@@ -1,0 +1,37 @@
+{
+  "name": "@voxgig/seneca-browser-store",
+  "version": "0.1.0",
+  "description": "A Redux-like state cache for Seneca in the browser: transparently caches query messages, updates optimistically, and drives reactivity via messages. Pairs with @voxgig/seneca-browser-debug for a live cache tree view.",
+  "main": "browser-store.js",
+  "types": "browser-store.d.ts",
+  "files": [
+    "browser-store.js",
+    "browser-store.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test --test-force-exit test/*.test.js"
+  },
+  "keywords": [
+    "seneca",
+    "seneca-plugin",
+    "browser",
+    "cache",
+    "store",
+    "state"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/voxgig/seneca-browser-store.git"
+  },
+  "author": "Richard Rodger",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/voxgig/seneca-browser-store/issues"
+  },
+  "homepage": "https://github.com/voxgig/seneca-browser-store#readme",
+  "devDependencies": {
+    "@seneca/browser": "^8.0.0rc4"
+  }
+}
