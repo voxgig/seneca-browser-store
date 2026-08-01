@@ -1,7 +1,7 @@
 {
-  "name": "@seneca/browser-store",
+  "name": "@voxgig/seneca-browser-store",
   "version": "0.1.0",
-  "description": "A Redux-like state cache for Seneca in the browser: transparently caches query messages (pass-through) and invalidates on mutations to avoid staleness. Pairs with @seneca/browser-debug for a live cache tree view.",
+  "description": "A Redux-like state cache for Seneca in the browser: transparently caches query messages, updates optimistically, and drives reactivity via messages. Pairs with @voxgig/seneca-browser-debug for a live cache tree view.",
   "main": "browser-store.js",
   "types": "browser-store.d.ts",
   "files": [

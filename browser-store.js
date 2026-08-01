@@ -1,18 +1,23 @@
 /* Copyright (c) 2026 Richard Rodger, MIT License. */
 
 /*
- * @seneca/browser-store
+ * @voxgig/seneca-browser-store
  *
  * A Redux-like state cache for Seneca running in the browser. It sits
  * transparently in front of the remote (backend) message pins and caches
  * query results, so repeated reads are served from an in-memory state tree
- * instead of hitting the server again. Mutations (writes) invalidate the
- * matching cache group, so the cache does not go stale.
+ * instead of hitting the server again.
  *
- * This is a PASS-THROUGH cache: it never changes message semantics. On a
- * cache miss it calls the original (wrapped) action via `this.prior`, stores
- * the result, and returns it. Reactivity (subscriptions that re-render on
- * change) is intentionally out of scope for now.
+ * Interception uses the ordu inward/outward pipeline (the same mechanism
+ * seneca-browser uses for `debounce`), which works over a transport client
+ * pin where `seneca.wrap` cannot. On a read miss the value is cached; a write
+ * updates the cache OPTIMISTICALLY (mutating the cached list(s) in place
+ * before the server replies) and reconciles with the authoritative result -
+ * or heals by invalidating on error.
+ *
+ * Reactivity is message-based: on a change the store emits
+ * `sys:browser-store,changed:group` / `changed:all`, which any component can
+ * observe with `seneca.sub` (many observers per pattern).
  *
  * How it decides what to cache (all configurable):
  *   - A message is a READ (cacheable) if it carries one of `read` verb keys
@@ -29,7 +34,7 @@
  *   seneca.use(SenecaBrowserStore, { pin: 'aim:*' })
  *
  * Usage (ESM / bundler):
- *   import SenecaBrowserStore from '@seneca/browser-store'
+ *   import SenecaBrowserStore from '@voxgig/seneca-browser-store'
  *   seneca.use(SenecaBrowserStore, { pin: 'aim:*' })
  *
  * IMPORTANT: register the plugin AFTER `.client(...)` so the remote pin

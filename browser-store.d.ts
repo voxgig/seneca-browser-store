@@ -1,4 +1,4 @@
-// Type declarations for @seneca/browser-store.
+// Type declarations for @voxgig/seneca-browser-store.
 
 export interface BrowserStoreOptions {
   /** Pins to intercept (should match the remote client pin). Default 'aim:*'. */

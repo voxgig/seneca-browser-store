@@ -1,4 +1,4 @@
-# @seneca/browser-store
+# @voxgig/seneca-browser-store
 
 A Redux-like **state cache** for [Seneca][] running in the browser. It sits
 transparently in front of the remote (backend) message pins and caches query
@@ -30,13 +30,13 @@ seneca.sub('sys:browser-store,changed:group', (msg) => {
 })
 ```
 
-Pairs with [`@seneca/browser-debug`][browser-debug], whose **Store** tab shows
+Pairs with [`@voxgig/seneca-browser-debug`][browser-debug], whose **Store** tab shows
 the live cache as a tree.
 
 ## Install
 
 ```sh
-npm install @seneca/browser-store
+npm install @voxgig/seneca-browser-store
 ```
 
 ## Usage
@@ -45,7 +45,7 @@ Register the plugin **after** `.client(...)`, so the remote pin actions exist.
 
 ```js
 import Seneca from '@seneca/browser'
-import SenecaBrowserStore from '@seneca/browser-store'
+import SenecaBrowserStore from '@voxgig/seneca-browser-store'
 
 const seneca = Seneca({ legacy: false }).client({ type: 'browser', pin: 'aim:*' })
 seneca.use(SenecaBrowserStore, { pin: 'aim:*' })
