@@ -19,12 +19,16 @@ There is no build step (the package ships plain JS) and no coverage gate.
 `npm install` rather than `npm ci`, because `package-lock.json` is
 gitignored here and `npm ci` requires a committed lockfile.
 
-## Will it pass today? NO — one test fails
+## Will it pass today? Yes
 
-**13 tests, 12 pass, 1 fails.**
+**13 tests, all passing.** Verified from a clean checkout: `rm -rf node_modules package-lock.json
+&& npm install && npm test`.
 
-The failure is **not in this repo's code**. It is an upstream bug in
-`seneca-browser@8.0.0-rc4`, on the error path:
+Nothing needs credentials or secrets.
+
+## Why seneca-browser is pinned to an exact 8.0.0-rc2
+
+Not a preference — **8.0.0-rc3 and -rc4 are broken** on the error path:
 
 ```
 TypeError: Cannot read properties of null (reading 'errline')
@@ -33,14 +37,25 @@ TypeError: Cannot read properties of null (reading 'errline')
     at outward_act_error (...)
 ```
 
-Both this repo and its sibling `@voxgig/seneca-browser-debug` fail exactly
-one test each, in both cases the one that drives an **error flow** through
-a live bus. Everything else passes.
+Bisected across the published releases:
 
-Fix it upstream in `seneca-browser`, or pin to a release where that path
-works. Do **not** skip the test to make CI green — it is the only coverage
-of error propagation through the bus, which is precisely what this package
-exists to capture.
+| version | result |
+|---|---|
+| 8.0.0-rc1 | passes |
+| **8.0.0-rc2** | **passes — pinned here** |
+| 8.0.0-rc3 | fails |
+| 8.0.0-rc4 | fails |
+
+So the regression landed in rc3. The failing test is the one driving an
+**error flow** through a live bus — in this repo and in its sibling, the
+same single test. Skipping it was the wrong fix: it is the only coverage
+of error propagation through the bus, which is what these packages exist
+to handle. Pinning to the last good release keeps that coverage.
+
+The pin is **exact**, not a range, so a `^` cannot drag rc3/rc4 back in.
+
+Raise the bug upstream against `seneca-browser`. When a release fixes
+that path, move the pin forward and delete this section.
 
 ## What was fixed to get this far
 
