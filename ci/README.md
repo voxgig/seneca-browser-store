@@ -68,12 +68,34 @@ happened to have `voxgig/seneca-browser` cloned as a sibling directory,
 which the test falls back to.
 
 The published package is **unscoped**: `seneca-browser`. It is now a
-devDependency, and the test's require chain tries, in order:
+devDependency, and the test resolves it as follows:
 
 1. `@seneca/browser` — kept first, in case that name is ever published
 2. `seneca-browser` — the package that actually exists
-3. `../../seneca-browser/seneca-browser.js` — the sibling checkout
+3. `../../seneca-browser/seneca-browser.js` — the sibling checkout, only
+   if neither package is installed
 
-So a clean checkout now installs and runs, a sibling checkout still wins
-for local development against unreleased changes, and nothing breaks if
-the scoped name appears later.
+## Testing against a sibling checkout
+
+Set `SENECA_BROWSER_SIBLING=1`:
+
+```bash
+SENECA_BROWSER_SIBLING=1 npm test
+```
+
+This is an **explicit opt-in**, and an earlier version of this change got
+it wrong. The fallback chain alone does not do it: once `seneca-browser`
+is a real devDependency, step 2 always resolves after `npm install`, so
+step 3 became unreachable and the sibling could never be exercised —
+while the docs claimed otherwise.
+
+Implicitly preferring the sibling would be worse: it would silently
+defeat the version pin for anyone who happens to have that directory two
+levels up, which is exactly how you end up back on the broken rc3/rc4
+without noticing.
+
+Note also that presence is decided by `require.resolve()`, with the
+`require()` itself outside the `try`. A package that is found but throws
+while **evaluating** — a missing transitive dependency, an incompatible
+runtime — now surfaces that error instead of being silently mistaken for
+"not installed" and falling through to a sibling that may not exist.
