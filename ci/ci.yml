@@ -1,0 +1,34 @@
+# CI for @voxgig/seneca-browser-store.
+#
+# DORMANT. GitHub only runs workflows under .github/workflows/.
+# See ci/README.md - one test is EXPECTED to fail on an upstream bug.
+
+name: ci
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # `npm install`, not `npm ci`: package-lock.json is gitignored in
+      # this repo, and `npm ci` requires a committed lockfile.
+      - name: install
+        run: npm install --no-audit --no-fund
+
+      - name: test
+        run: npm test

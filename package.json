@@ -32,6 +32,6 @@
   },
   "homepage": "https://github.com/voxgig/seneca-browser-store#readme",
   "devDependencies": {
-    "@seneca/browser": "^8.0.0rc4"
+    "seneca-browser": "^8.0.0-rc4"
   }
 }

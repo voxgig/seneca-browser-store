@@ -9,7 +9,13 @@ try {
   Seneca = require('@seneca/browser')
 }
 catch (e) {
-  Seneca = require('../../seneca-browser/seneca-browser.js')
+  try {
+    // The published package is UNSCOPED. '@seneca/browser' 404s on npm.
+    Seneca = require('seneca-browser')
+  }
+  catch (e2) {
+    Seneca = require('../../seneca-browser/seneca-browser.js')
+  }
 }
 
 const BrowserStore = require('../browser-store.js')
