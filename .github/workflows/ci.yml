@@ -1,0 +1,38 @@
+# CI for @voxgig/seneca-browser-store.
+#
+# ACTIVE. Runs on every push and pull request.
+#
+# The suite is GREEN: the seneca-browser dependency is pinned to the exact
+# 8.0.0-rc2, the last release before the `errline` regression. (An earlier
+# revision of this comment said a failure was expected — that predated the
+# pin.) ci/README.md records the bisection.
+
+name: ci
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # `npm install`, not `npm ci`: package-lock.json is gitignored in
+      # this repo, and `npm ci` requires a committed lockfile.
+      - name: install
+        run: npm install --no-audit --no-fund
+
+      - name: test
+        run: npm test

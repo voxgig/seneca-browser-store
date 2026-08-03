@@ -4,13 +4,38 @@
 const { test } = require('node:test')
 const assert = require('node:assert')
 
-let Seneca
-try {
-  Seneca = require('@seneca/browser')
+// Which seneca-browser to test against.
+//
+// Default: the pinned package, so CI and a clean checkout are
+// deterministic. Set SENECA_BROWSER_SIBLING=1 to use a sibling checkout
+// (../../seneca-browser) instead, for validating unreleased upstream
+// changes - an explicit opt-in, because silently preferring whatever
+// happens to sit two directories up would defeat the version pin.
+//
+// require.resolve() decides PRESENCE; the require() itself is outside the
+// try, so an error thrown while EVALUATING a found package propagates
+// instead of being mistaken for "not installed".
+function loadSeneca() {
+  if (process.env.SENECA_BROWSER_SIBLING) {
+    return require('../../seneca-browser/seneca-browser.js')
+  }
+
+  for (const id of ['@seneca/browser', 'seneca-browser']) {
+    let found = null
+    try {
+      found = require.resolve(id)
+    }
+    catch (e) {
+      // Not installed under this name; try the next.
+      continue
+    }
+    return require(found)
+  }
+
+  return require('../../seneca-browser/seneca-browser.js')
 }
-catch (e) {
-  Seneca = require('../../seneca-browser/seneca-browser.js')
-}
+
+const Seneca = loadSeneca()
 
 const BrowserStore = require('../browser-store.js')
 
