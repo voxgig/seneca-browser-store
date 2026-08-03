@@ -1,15 +1,14 @@
-# CI workflow (dormant)
+# CI
 
-GitHub only runs workflows found under `.github/workflows/`. This lives in
-`ci/`, so it is **inert** until deliberately activated.
+`ci.yml` is **active**, at `.github/workflows/ci.yml`. It ran dormant in
+this folder while it was being built; it now runs on every push and pull
+request. This folder keeps the notes.
 
-## Activate
-
-```bash
-mkdir -p .github/workflows
-git mv ci/ci.yml .github/workflows/ci.yml
-git commit -m 'ci: activate workflow'
-```
+Verified before activation from a CLEAN checkout (`rm -rf node_modules
+package-lock.json && npm install && npm test`): 13/13 green. That matters
+here more than usual — this repo could not install at all until the
+dependency fix in this branch, so "it passes locally" had to mean
+"it passes from nothing".
 
 ## What runs
 

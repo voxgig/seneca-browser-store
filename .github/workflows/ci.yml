@@ -1,7 +1,11 @@
 # CI for @voxgig/seneca-browser-store.
 #
-# DORMANT. GitHub only runs workflows under .github/workflows/.
-# See ci/README.md - one test is EXPECTED to fail on an upstream bug.
+# ACTIVE. Runs on every push and pull request.
+#
+# The suite is GREEN: the seneca-browser dependency is pinned to the exact
+# 8.0.0-rc2, the last release before the `errline` regression. (An earlier
+# revision of this comment said a failure was expected — that predated the
+# pin.) ci/README.md records the bisection.
 
 name: ci
 
